@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
-import { Home, Settings, Menu, Calculator, Store, Tag, LetterText } from "lucide-react"
+import { Home, Menu, TagIcon, X, CheckCheckIcon } from "lucide-react"
 import Button from "./ui/Button"
 
 export default function Sidebar() {
@@ -11,7 +11,10 @@ export default function Sidebar() {
   const router = useRouter()
 
   const menuItems = [
-    { label: "Home", icon: Home, path: "/home" },
+     { label: "Home", icon: Home, path: "/home" }, 
+     { label: "Sin etiquetar", icon: TagIcon, path: "/home" },
+     { label: "Rechazadas", icon: X, path: "/home" },
+     { label: "Concluidas", icon: CheckCheckIcon, path: "/home" } 
   ]
 
   return (

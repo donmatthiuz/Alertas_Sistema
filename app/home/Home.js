@@ -19,6 +19,7 @@ const alertas = [
     id: 1,
     monto: 15000.50,
     estado: "Pendiente",
+    nombre: "Sociedad Anonima 0",
     detalle: "Transacción sospechosa detectada en cuenta empresarial",
     tipoConclusion: "Fraude",
     fechaCreacion: "2024-08-01",
@@ -30,6 +31,7 @@ const alertas = [
     id: 2,
     monto: 8500.00,
     estado: "Concluida",
+    nombre: "Sociedad Anonima 1",
     detalle: "Operación inusual en horario nocturno",
     tipoConclusion: "Falso Positivo",
     fechaCreacion: "2024-08-02",
@@ -41,6 +43,7 @@ const alertas = [
     id: 3,
     monto: 25000.00,
     estado: "Rechazada",
+    nombre: "Sociedad Anonima 2",
     detalle: "Múltiples transferencias a cuentas nuevas",
     tipoConclusion: "Lavado de Dinero",
     fechaCreacion: "2024-08-03",
@@ -52,6 +55,7 @@ const alertas = [
     id: 4,
     monto: 3200.75,
     estado: "Pendiente",
+    nombre: "Sociedad Anonima 3",
     detalle: "Patrón de retiros frecuentes detectado",
     tipoConclusion: "Sospechoso",
     fechaCreacion: "2024-08-04",
@@ -63,6 +67,7 @@ const alertas = [
     id: 5,
     monto: 45000.00,
     estado: "Concluida",
+    nombre: "Sociedad Anonima 5",
     detalle: "Transferencia internacional de alto monto",
     tipoConclusion: "Legítimo",
     fechaCreacion: "2024-08-05",
@@ -188,7 +193,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 ">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
@@ -201,7 +206,7 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <Card className="flex-1 flex flex-col min-h-0">
+          <Card className="flex-1 flex flex-col overflow-x-auto min-h-0 w-4/5">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-semibold text-gray-900">Alertas del Sistema</h2>
@@ -227,7 +232,8 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 mt-4">
+              {/* FILTROS
+               <div className="flex items-center gap-4 mt-4">
                 <SimpleFilterDropdown 
                   options={estadosOptions} 
                   onSelect={setEstadoFilter} 
@@ -258,41 +264,48 @@ export default function Home() {
                   </Button>
                 )}
               </div>
+              */}
+             
             </div>
 
             {/* Contenedor con scroll horizontal y tamaño fijo */}
-            <div className="flex-1 w-full overflow-auto" style={{ maxWidth: '100%' }}>
-              <div className="min-w-[1400px] h-full"> {/* Ancho mínimo fijo para la tabla */}
-                <Table className="w-full">
+            <div className="flex-1 " >
+              <div className="flex overflow-x-auto max-w-100"> {/* Ancho mínimo fijo para la tabla */}
+                <Table >
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-16">ID</TableHead>
-                      <TableHead className="w-32">Monto</TableHead>
                       <TableHead className="w-24">Estado</TableHead>
+                      <TableHead className="w-24">Nombre</TableHead>
+                      <TableHead className="w-32">Monto Retirado</TableHead>
+                      <TableHead className="w-40">Umbral de Activacion</TableHead>
                       <TableHead className="w-80">Detalle</TableHead>
-                      <TableHead className="w-36">Tipo de Conclusión</TableHead>
-                      <TableHead className="w-40">Tipo de Umbral</TableHead>
-                      <TableHead className="w-28">Umbral</TableHead>
-                      <TableHead className="w-80">Comentario</TableHead>
+                      <TableHead className="w-36">Conclusion Alerta</TableHead>
                       <TableHead className="w-28">Fecha</TableHead>
-                      <TableHead className="w-32">Acciones</TableHead>
+                      
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredAlertas.map((alerta) => (
                       <TableRow key={alerta.id}>
-                        <TableCell className="w-16">
-                          <div className="text-sm font-medium text-gray-900">#{alerta.id}</div>
+                        <TableCell className="w-24">
+                          <Badge variant={getEstadoBadgeVariant(alerta.estado)}>
+                            {alerta.estado}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="w-80">
+                          <div className="text-sm text-gray-900 max-w-xs truncate" title={alerta.nombre}>
+                            {alerta.nombre}
+                          </div>
                         </TableCell>
                         <TableCell className="w-32">
                           <div className="text-sm font-semibold text-gray-900">
                             {formatMonto(alerta.monto)}
                           </div>
                         </TableCell>
-                        <TableCell className="w-24">
-                          <Badge variant={getEstadoBadgeVariant(alerta.estado)}>
-                            {alerta.estado}
-                          </Badge>
+                        <TableCell className="w-40">
+                          <div className="text-sm text-gray-700">
+                            {alerta.umbral}
+                          </div>
                         </TableCell>
                         <TableCell className="w-80">
                           <div className="text-sm text-gray-900 max-w-xs truncate" title={alerta.detalle}>
@@ -304,38 +317,9 @@ export default function Home() {
                             {alerta.tipoConclusion}
                           </Badge>
                         </TableCell>
-                        <TableCell className="w-40">
-                          <div className="text-sm text-gray-700">
-                            {alerta.tipoUmbral}
-                          </div>
-                        </TableCell>
-                        <TableCell className="w-28">
-                          <div className="text-sm font-medium text-gray-900">
-                            {formatUmbral(alerta.umbral, alerta.tipoUmbral)}
-                          </div>
-                        </TableCell>
-                        <TableCell className="w-80">
-                          <Input
-                            type="text"
-                            placeholder="Agregar comentario..."
-                            value={getComentario(alerta)}
-                            onChange={(e) => handleComentarioChange(alerta.id, e.target.value)}
-                            className="text-sm w-full"
-                          />
-                        </TableCell>
                         <TableCell className="w-28">
                           <div className="text-sm text-gray-900">
                             {new Date(alerta.fechaCreacion).toLocaleDateString('es-GT')}
-                          </div>
-                        </TableCell>
-                        <TableCell className="w-32">
-                          <div className="flex space-x-2 whitespace-nowrap">
-                            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-900">
-                              <Eye size={16} />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-900">
-                              Procesar
-                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
